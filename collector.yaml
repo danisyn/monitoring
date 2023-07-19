@@ -64,6 +64,7 @@ spec:
       labels:
         app: syndeno-web-monitor
     spec:
+      serviceAccountName: collector
       containers:
       - name: syndeno-web-monitor
         image: daniels7/ingress-monitor:latest
