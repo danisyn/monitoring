@@ -16,7 +16,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: syndeno-collector-cluster-bind-web-monitor
+  name: syndeno-collector-cluster-role-web-monitor
 rules:
   - apiGroups: [""]
     resources: ["namespaces"]
