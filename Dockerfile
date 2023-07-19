@@ -12,4 +12,4 @@ RUN go get ingress-monitor
 
 RUN go build -o /ingress-monitor
 
-CMD ["/ingress-monitor"]
+CMD ["sleep", "infinity"]
