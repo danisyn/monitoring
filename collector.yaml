@@ -18,8 +18,8 @@ kind: ClusterRole
 metadata:
   name: syndeno-collector-cluster-role-web-monitor
 rules:
-  - apiGroups: [""]
-    resources: ["namespaces", "ingress"]
+  - apiGroups: ["v1"]
+    resources: ["namespaces"]
     verbs: ["get", "list"]
 
 ---
@@ -29,7 +29,7 @@ kind: Role
 metadata:
   name: syndeno-collector-role-ingress
 rules:
-  - apiGroups: [""]
+  - apiGroups: ["networking.k8s.io"]
     resources: ["ingress"]
     verbs: ["get", "list"]
 
