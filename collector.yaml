@@ -25,6 +25,17 @@ rules:
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: syndeno-collector-role-ingress
+rules:
+  - apiGroups: [""]
+    resources: ["ingress"]
+    verbs: ["get", "list"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: syndeno-collector-cluster-bind-web-monitor

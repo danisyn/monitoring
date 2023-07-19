@@ -9,8 +9,6 @@ import (
 
 func GetIngress(ns string, clientset *kubernetes.Clientset) {
 
-	
-
 	ingressList, err := clientset.NetworkingV1().Ingresses(ns).List(context.TODO() ,metav1.ListOptions{})
 
 	if err != nil {
