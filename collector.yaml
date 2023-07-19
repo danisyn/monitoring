@@ -17,6 +17,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: syndeno-collector-cluster-role-web-monitor
+  namespace: syndeno-collector
 rules:
   - apiGroups: [""]
     resources: ["namespaces"]
@@ -28,6 +29,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: syndeno-collector-role-ingress
+  namespace: syndeno-collector
 rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["ingresses"]
