@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: syndeno-collector
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: collector
+  namespace: syndeno-collector
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: syndeno-collector-cluster-role-web-monitor
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "ingress"]
+    verbs: ["get", "list"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: syndeno-collector-cluster-bind-web-monitor
+  namespace: syndeno-collector
+subjects:
+- kind: ServiceAccount
+  name: collector
+  namespace: syndeno-collector
+roleRef:
+  kind: ClusterRole
+  name: syndeno-collector-cluster-role-web-monitor
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: syndeno-web-monitor
+  labels:
+    app: syndeno-web-monitor
+    developer: danisyn
+    language: go
+    function: kubernetes-ingress-web-monitor
+  namespace: syndeno-collector
+spec:
+  serviceName: syndeno-web-monitor
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syndeno-web-monitor
+  template:
+    metadata:
+      labels:
+        app: syndeno-web-monitor
+    spec:
+      containers:
+      - name: syndeno-web-monitor
+        image: daniels7/ingress-monitor:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 200m
+            memory: 300M 
