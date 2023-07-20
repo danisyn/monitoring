@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"ingress-monitor/structures"
 )
 
-func pingger(hosts []ClientIngress) {
+var array []structures.ClientIngress
+
+func pingger(hosts []structures.ClientIngress) []structures.ClientIngress {
 
 	for i, v := range hosts {
 		resp, err := http.Get("https://" + v.Host + "/")
 		if err != nil {
 			fmt.Println("Error:", err)
-			return
 		}
 		defer resp.Body.Close()
 	
@@ -25,6 +27,6 @@ func pingger(hosts []ClientIngress) {
 
 	}
 
-	fmt.Println(array)
+	return array
 
 }

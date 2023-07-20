@@ -8,6 +8,7 @@ import (
 	"k8s.io/client-go/rest"
 	"os"
 	"regexp"
+	"ingress-monitor/influxdb"
 )
 
 func main() {
@@ -30,11 +31,15 @@ func main() {
 		panic(err.Error())
 	}
 
+	influxdb.PingInflux()
+
 	ns := namespaces(clientset)
 
 	hosts := GetIngress(ns, clientset)
 
-	pingger(hosts)
+	array := pingger(hosts)
+
+	influxdb.StoreData(array)
 
 }
 

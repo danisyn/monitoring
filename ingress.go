@@ -5,9 +5,10 @@ import (
 	"context"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"ingress-monitor/structures"
 )
 
-func GetIngress(ns string, clientset *kubernetes.Clientset) []ClientIngress{
+func GetIngress(ns string, clientset *kubernetes.Clientset) []structures.ClientIngress{
 
 	ingressList, err := clientset.NetworkingV1().Ingresses(ns).List(context.TODO() ,metav1.ListOptions{})
 
@@ -16,7 +17,7 @@ func GetIngress(ns string, clientset *kubernetes.Clientset) []ClientIngress{
 	}
 
 	for _, ingress := range ingressList.Items {
-		newIngress := ClientIngress{
+		newIngress := structures.ClientIngress{
 			Name: ingress.Name,
 			Host: ingress.Spec.Rules[0].Host,
 		}
