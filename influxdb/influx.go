@@ -2,28 +2,18 @@ package influxdb
 
 import (
 	"fmt"
-	"github.com/influxdata/influxdb1-client/v2"
-	"log"
+	"github.com/influxdata/influxdb-client-go/v2"
 	"time"
 	"ingress-monitor/structures"
+	"context"
 )
 
 func PingInflux() {
 
 	// Create a new HTTPClient
-	cli, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     influxURL,
-		Username: username,
-		Password: password,
-	})
-	if err != nil {
-		fmt.Println("Error creating InfluxDB HTTP client:", err)
-		return
-	}
-	defer cli.Close()
-
+	client := influxdb2.NewClient(influxURL, token)
 	// Test the connection
-	_, _, err = cli.Ping(0)
+	_, err := client.Ping(context.Background())
 	if err != nil {
 		fmt.Println("Error pinging InfluxDB:", err)
 		return
@@ -33,41 +23,22 @@ func PingInflux() {
 }
 
 func StoreData(array []structures.ClientIngress) {
-	cli, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     influxURL,
-		Username: username,
-		Password: password,
-	})
-	if err != nil {
-		log.Fatal("Error creating InfluxDB HTTP client:", err)
-	}
-	defer cli.Close()
-
+	// Create an HTTPClient with the desired configuration
+	client := influxdb2.NewClient(influxURL, token)
+	writeAPI := client.WriteAPIBlocking(org, bucket)
 	for _, ingress := range array {
 		// Create a new point batch
-		bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-			Database:  database,
-			Precision: "s", // Set the precision of timestamps (s: seconds, ms: milliseconds, etc.)
-		})
+		p := influxdb2.NewPoint("stat", 
+		map[string]string{"resource": "Ingress"},
+		map[string]interface{}{"name": ingress.Name, "host": ingress.Host, "response": ingress.Response},
+		time.Now())	
+
+		err := writeAPI.WritePoint(context.Background(), p)
 		if err != nil {
-			log.Fatal("Error creating batch points:", err)
+			fmt.Println("Error writing to influx")
+			fmt.Println(err)
+		} else {
+			fmt.Println("Data point stored in InfluxDB successfully! - Ingress name - " + ingress.Name)
 		}
-
-		tags := map[string]string{"IngressName": ingress.Name, "IngressHost": ingress.Host} // Tags associated with the data point
-		fields := map[string]interface{}{"IngressResponse": ingress.Response} // Field values of the data point
-		pt, err := client.NewPoint("ingress_liveness", tags, fields, time.Now())
-		if err != nil {
-			log.Fatal("Error creating data point:", err)
-		}
-
-		bp.AddPoint(pt)
-
-		// Write the batch to InfluxDB
-		if err := cli.Write(bp); err != nil {
-			log.Fatal("Error writing batch to InfluxDB:", err)
-		}
-
-		fmt.Println("Data point stored in InfluxDB successfully! - Ingress name - " + ingress.Name)
 	}
-
 }
