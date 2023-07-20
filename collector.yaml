@@ -122,3 +122,17 @@ spec:
       resources:
         requests:
           storage: 10Gi
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb-service
+spec:
+  selector:
+    app: influxdb 
+  ports:
+    - name: http
+      port: 8086
+      targetPort: 8086
