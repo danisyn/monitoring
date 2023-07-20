@@ -80,6 +80,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: influxDB
+  namespace: syndeno-collector
 spec:
   selector:
     matchLabels:
