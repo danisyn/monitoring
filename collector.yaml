@@ -111,7 +111,7 @@ spec:
             value: my-bucket
           - name: DOCKER_INFLUXDB_INIT_RETENTION
             value: 1w
-          - name: DOCKER_INFLUXDB_INIT_TOKEN
+          - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
             value: fje93lruf73ka940k2j8au392mf84haoem38s04n
         volumeMounts:
         - name: influxdb-data
