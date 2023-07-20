@@ -7,7 +7,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func GetIngress(ns string, clientset *kubernetes.Clientset) {
+func GetIngress(ns string, clientset *kubernetes.Clientset) []ClientIngress{
 
 	ingressList, err := clientset.NetworkingV1().Ingresses(ns).List(context.TODO() ,metav1.ListOptions{})
 
@@ -16,7 +16,14 @@ func GetIngress(ns string, clientset *kubernetes.Clientset) {
 	}
 
 	for _, ingress := range ingressList.Items {
-		fmt.Printf("Ingress Name: %s\n", ingress.Name)
-		fmt.Printf("Ingress Host: %v\n", &ingress.Spec.Rules[0].Host)
+		newIngress := ClientIngress{
+			Name: ingress.Name,
+			Host: ingress.Spec.Rules[0].Host,
+		}
+
+		array = append(array, newIngress)
 	}
+
+	return array
+
 }

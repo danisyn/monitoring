@@ -32,7 +32,9 @@ func main() {
 
 	ns := namespaces(clientset)
 
-	GetIngress(ns, clientset)
+	hosts := GetIngress(ns, clientset)
+
+	pingger(hosts)
 
 }
 

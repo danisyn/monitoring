@@ -73,3 +73,51 @@ spec:
           limits:
             cpu: 200m
             memory: 300M 
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: influxDB
+spec:
+  selector:
+    matchLabels:
+      app: influxDB
+  serviceName: influxDB
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: influxDB
+    spec:
+      containers:
+      - name: influxDB
+        image: influxdb:latest
+        ports:
+        - containerPort: 8086
+          name: web
+        env: 
+          - name: DOCKER_INFLUXDB_INIT_MODE
+            value: setup
+          - name: DOCKER_INFLUXDB_INIT_USERNAME
+            value: syndeno
+          - name: DOCKER_INFLUXDB_INIT_PASSWORD
+            value: Syndeno2022!
+          - name: DOCKER_INFLUXDB_INIT_ORG
+            value: syndeno
+          - name: DOCKER_INFLUXDB_INIT_BUCKET
+            value: my-bucket
+          - name: DOCKER_INFLUXDB_INIT_RETENTION
+            value: 1w
+        volumeMounts:
+        - name: influxdb-data
+          mountPath: /var/lib/influxdb2
+  volumeClaimTemplates:
+  - metadata:
+      name: influxdb-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
