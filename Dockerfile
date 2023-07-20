@@ -5,13 +5,15 @@ WORKDIR /app
 RUN apk add nano
 RUN apk add bash
 
-COPY go.mod ./
+COPY influxdb /app/influxdb
+
+COPY structures /app/structures
+
+COPY go.mod go.sum ./
 
 RUN go mod download
 
 COPY *.go ./
-
-RUN go get ingress-monitor
 
 RUN go build -o /ingress-monitor
 
