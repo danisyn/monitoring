@@ -5,13 +5,16 @@ WORKDIR /app
 RUN apk add nano
 RUN apk add bash
 
-COPY influxdb /app/influxdb
-
 COPY structures /app/structures
 
-COPY go.mod go.sum ./
+RUN go mod init ingress-monitor
+RUN go mod tidy
 
-RUN go mod download
+RUN go get k8s.io/apimachinery/pkg/apis/meta/v1 \
+&& go get k8s.io/client-go/kubernetes \
+&& go get k8s.io/client-go/rest
+
+#RUN go mod download
 
 COPY *.go ./
 

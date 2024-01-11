@@ -8,21 +8,28 @@ import (
 	"ingress-monitor/structures"
 )
 
-func GetIngress(ns string, clientset *kubernetes.Clientset) []structures.ClientIngress{
+var array []structures.ClientIngress
 
-	ingressList, err := clientset.NetworkingV1().Ingresses(ns).List(context.TODO() ,metav1.ListOptions{})
+func GetIngress(namespaceList []string, clientset *kubernetes.Clientset) []structures.ClientIngress{
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	for _, ns := range namespaceList {
 
-	for _, ingress := range ingressList.Items {
-		newIngress := structures.ClientIngress{
-			Name: ingress.Name,
-			Host: ingress.Spec.Rules[0].Host,
+		ingressList, err := clientset.NetworkingV1().Ingresses(ns).List(context.TODO() ,metav1.ListOptions{})
+
+		if err != nil {
+			fmt.Println(err)
 		}
 
-		array = append(array, newIngress)
+		for _, ingress := range ingressList.Items {
+			newIngress := structures.ClientIngress{
+				Name: ingress.Name,
+				Host: ingress.Spec.Rules[0].Host,
+				Namespace: ingress.Namespace,
+			}
+
+			array = append(array, newIngress)
+		}
+
 	}
 
 	return array

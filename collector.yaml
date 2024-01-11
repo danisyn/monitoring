@@ -67,70 +67,18 @@ spec:
       serviceAccountName: collector
       containers:
       - name: syndeno-web-monitor
-        image: daniels7/ingress-monitor:latest
+        image: daniels7/ingress-monitor:api
         imagePullPolicy: Always
         resources:
           limits:
             cpu: 200m
             memory: 300M 
-
----
-
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: influxdb
-  namespace: syndeno-collector
-spec:
-  selector:
-    matchLabels:
-      app: influxdb
-  serviceName: influxdb
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: influxdb
-    spec:
-      containers:
-      - name: influxdb
-        image: influxdb:latest
-        ports:
-        - containerPort: 8086
-          name: web
-        env: 
-          - name: DOCKER_INFLUXDB_INIT_MODE
-            value: setup
-          - name: DOCKER_INFLUXDB_INIT_USERNAME
-            value: syndeno
-          - name: DOCKER_INFLUXDB_INIT_PASSWORD
-            value: Syndeno2022!
-          - name: DOCKER_INFLUXDB_INIT_ORG
-            value: syndeno
-          - name: DOCKER_INFLUXDB_INIT_BUCKET
-            value: my-bucket
-          - name: DOCKER_INFLUXDB_INIT_RETENTION
-            value: 1w
-          - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
-            value: fje93lruf73ka940k2j8au392mf84haoem38s04n
-        volumeMounts:
-        - name: influxdb-data
-          mountPath: /var/lib/influxdb2
-  volumeClaimTemplates:
-  - metadata:
-      name: influxdb-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
-
 --- 
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: influxdb-service
+  name: 
   namespace: syndeno-collector
 spec:
   selector:
